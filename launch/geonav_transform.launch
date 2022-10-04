@@ -7,28 +7,8 @@
 
   <node pkg="geonav_transform" type="geonav_transform_node" name="geonav_transform_node" clear_params="true" output="screen">
     <!-- Datum as latitude, longitude [decimal deg.], yaw [ENU, degrees] -->
-    <rosparam param="datum">[36.6137, -121.912, 0.0]</rosparam>
+    <rosparam param="datum">[40.59129382755056, -79.89829956948763, 115]</rosparam>
+    <rosparam param="altitude">313.1</rosparam>
+    <remap from="/nav_odom" to="/nav/odom"/>
   </node>
-
-  <!--
-  <node name="microstrain_3dm_gx5_45" 
-  pkg="microstrain_3dm_gx5_45" 
-  type="microstrain_3dm_gx5_45" output="screen">
-    <param name="port" value="/dev/ttyACM0" type="str" />
-    <param name="baudrate" value="115200" type="int" />
-    <param name="gps_frame_id" value="world" type=" str" />
-    <param name="imu_frame_id" value="imu" type="str" />
-    <param name="nav_frame_id" value="" type="str" />
-    <param name="gps_rate" value="4" type="int" />
-    <param name="imu_rate" value="10" type="int" />
-    <param name="nav_rate" value="10" type="int" />
-    <param name="dynamics_mode" value="1" type="int" />
-    <param name="declination_source" value="2" type="int" />
-    <param name="declination" value="0.23" type="double" />
-  </node>
-  -->
-
-
-  
-
 </launch>
