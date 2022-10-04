@@ -73,6 +73,7 @@ void GeonavTransform::run()
   nh_priv.param("broadcast_utm2odom_transform", broadcast_utm2odom_transform_, true);
   nh_priv.param("broadcast_odom2base_transform", broadcast_odom2base_transform_, true);
   nh_priv.param("zero_altitude", zero_altitude_, false);
+  nh_priv.param("altitude", altitude_, 0.0);
   nh_priv.param<std::string>("base_link_frame_id", base_link_frame_id_, "base_link");
   nh_priv.param<std::string>("odom_frame_id", odom_frame_id_, "odom");
   nh_priv.param<std::string>("utm_frame_id", utm_frame_id_, "utm");
@@ -155,13 +156,6 @@ void GeonavTransform::run()
 		       << datum_config.getType() << ")");
       exit(1);
     }
-    
-    // Tell everyone we are ignoring yaw in the datum
-    if (fabs(datum_yaw) > 0.01)
-    {
-      ROS_WARN("Yaw of the datum is ignored!");
-    }
-    datum_yaw = 0.0;
 
     // Try to resolve tf_prefix
     std::string tf_prefix = "";
@@ -176,9 +170,8 @@ void GeonavTransform::run()
     GeonavUtilities::appendPrefix(tf_prefix, odom_frame_id_);
     GeonavUtilities::appendPrefix(tf_prefix, base_link_frame_id_);
     
-    // Convert specified yaw to quaternion 
-    // Not currently effective since we ignore the yaw!
-    //quat.setRPY(0.0, 0.0, datum_yaw);
+    ROS_WARN_STREAM("Yaw is " << datum_yaw);
+    quat.setRPY(0.0, 0.0, datum_yaw * M_PI/180);
   } // end of datum config.
   
   // Setup transforms and messages 
@@ -196,7 +189,7 @@ void GeonavTransform::run()
   transform_msg_odom2base_.header.seq = 0;
 
   // Set datum - published static transform
-  setDatum(datum_lat, datum_lon, 0.0, quat); // alt is 0.0 for now
+  setDatum(datum_lat, datum_lon, altitude_, quat);
 
   // Publisher - Odometry relative to the odom frame
   odom_pub_ = nh.advertise<nav_msgs::Odometry>("geonav_odom", 10);

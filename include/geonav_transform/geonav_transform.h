@@ -184,6 +184,8 @@ class GeonavTransform
     //!
     bool zero_altitude_;
 
+    double altitude_;
+
     //! @brief Publisher of Nav relative to odom (datum) frame
     ros::Publisher odom_pub_;
     //! @brief Publisher of Nav Odometry relative to utm frame
