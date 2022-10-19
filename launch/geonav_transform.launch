@@ -6,9 +6,6 @@
        value="$(find geonav_transform)/config/custom_rosconsole.conf"/>
 
   <node pkg="geonav_transform" type="geonav_transform_node" name="geonav_transform_node" clear_params="true" output="screen">
-    <!-- Datum as latitude, longitude [decimal deg.], yaw [ENU, degrees] -->
-    <rosparam param="datum">[40.59129382755056, -79.89829956948763, 115]</rosparam>
-    <rosparam param="altitude">313.1</rosparam>
     <remap from="/nav_odom" to="/nav/odom"/>
   </node>
 </launch>
