@@ -59,7 +59,7 @@ namespace GeonavTransform
   void GeonavTransform::run()
   {
 
-    double frequency = 10.0;
+    double frequency = 100.0;
     double delay = 0.0;
 
     ros::NodeHandle nh;
@@ -85,7 +85,7 @@ namespace GeonavTransform
     double datum_yaw;
     tf2::Quaternion quat = tf2::Quaternion::getIdentity();
     tf2::Quaternion yaw_offset = tf2::Quaternion::getIdentity();
-    yaw_offset.setRPY(0, 0, M_PI);
+    yaw_offset.setRPY(0, 0, M_PI/2);
 
     // Setup transforms and messages
     nav_in_odom_.header.frame_id = odom_frame_id_;
@@ -270,6 +270,12 @@ namespace GeonavTransform
     // Note the 'base' and 'nav' frames are the same for now
     // odom2base = odom2nav = odom2utm * utm2nav
     transform_odom2base_.mult(transform_utm2odom_inverse_, transform_utm2nav_);
+    tf2::Transform transform_to_NED;
+    tf2::Quaternion rotation_NED_quat = tf2::Quaternion::getIdentity();
+    rotation_NED_quat.setRPY(M_PI, 0, M_PI/2);
+    transform_to_NED.setRotation(rotation_NED_quat);
+    transform_odom2base_ = transform_odom2base_ * transform_to_NED;
+
 
     ROS_DEBUG_STREAM_THROTTLE(2.0, "utm2nav X:"
                                        << transform_utm2nav_.getOrigin()[0]
@@ -292,11 +298,11 @@ namespace GeonavTransform
     tf2::toMsg(transform_odom2base_, nav_in_odom_.pose.pose);
     nav_in_odom_.pose.pose.position.z = (zero_altitude_ ? 0.0 : nav_in_odom_.pose.pose.position.z);
     // Orientation and twist are uneffected
-    nav_in_odom_.pose.pose.orientation = msg->pose.pose.orientation;
-    nav_in_odom_.pose.covariance = msg->pose.covariance;
-    nav_in_odom_.twist.twist.linear = msg->twist.twist.linear;
-    nav_in_odom_.twist.twist.angular = msg->twist.twist.angular;
-    nav_in_odom_.twist.covariance = msg->twist.covariance;
+    // nav_in_odom_.pose.pose.orientation = msg->pose.pose.orientation;
+    // nav_in_odom_.pose.covariance = msg->pose.covariance;
+    // nav_in_odom_.twist.twist.linear = msg->twist.twist.linear;
+    // nav_in_odom_.twist.twist.angular = msg->twist.twist.angular;
+    // nav_in_odom_.twist.covariance = msg->twist.covariance;
     odom_pub_.publish(nav_in_odom_);
   } // navOdomCallback
 
