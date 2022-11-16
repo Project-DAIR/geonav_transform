@@ -110,7 +110,7 @@ namespace GeonavTransform
 
     // Subscriber - Odometry in GPS frame.
     // for converstion from geo. coord. to local nav. coord.
-    ros::Subscriber geo_odom_sub = nh.subscribe("nav_odom", 1,
+    ros::Subscriber geo_odom_sub = nh.subscribe("nav_odom", 10,
                                                 &GeonavTransform::navOdomCallback,
                                                 this);
     // Subscriber - Odometry in Nav. frame.
